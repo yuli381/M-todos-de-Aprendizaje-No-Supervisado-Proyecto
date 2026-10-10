@@ -88,3 +88,27 @@ def ejecutar_clustering_no_supervisado():
     resumen_clusters = df.groupby('Cluster').mean()
     print(resumen_clusters)
     print("\n" + "=" * 60)
+# ------------------------------------------------------
+    # C. VISUALIZACIÓN GRÁFICA DE CLUSTERS
+    # ------------------------------------------------------
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(
+        data=df, 
+        x='pasajeros_por_minuto', 
+        y='velocidad_promedio_kmh', 
+        hue='Cluster', 
+        palette='Set1', 
+        s=70, 
+        alpha=0.8
+    )
+    plt.title('Agrupamiento de Patrones de Operación en TransMilenio (K-Means)', fontsize=12, fontweight='bold')
+    plt.xlabel('Pasajeros por Minuto')
+    plt.ylabel('Velocidad Promedio del Bus (km/h)')
+    plt.legend(title='Grupo / Cluster')
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    plt.savefig('clusters_transmilenio.png', dpi=300)
+    print("✓ Gráfica 'clusters_transmilenio.png' guardada.")
+    plt.show()
+
+
