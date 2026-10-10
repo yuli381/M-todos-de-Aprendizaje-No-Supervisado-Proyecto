@@ -1,7 +1,7 @@
-Actividad 4: Métodos de Aprendizaje No Supervisado
-Proyecto: Agrupamiento de Patrones de Operación en TransMilenio con K-Means (Clustering)
-Autores: Christian Paul Perez Wilches & Gueldy Yuliet Pardo Pardo
-"""
+#Actividad 4: Métodos de Aprendizaje No Supervisado
+#Proyecto: Agrupamiento de Patrones de Operación en TransMilenio con K-Means (Clustering)
+#Autores: Christian Paul Perez Wilches & Gueldy Yuliet Pardo Pardo
+
 
 import pandas as pd
 import numpy as np
