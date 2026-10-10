@@ -1,0 +1,90 @@
+Actividad 4: Métodos de Aprendizaje No Supervisado
+Proyecto: Agrupamiento de Patrones de Operación en TransMilenio con K-Means (Clustering)
+Autores: Christian Paul Perez Wilches & Gueldy Yuliet Pardo Pardo
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+
+# ==========================================================
+# 1. GENERACIÓN DE FUENTE DE DATOS (DATASET NO SUPERVISADO)
+# ==========================================================
+def generar_dataset_no_supervisado(n_muestras=500):
+    np.random.seed(42)
+    
+    # Variables continuas de operación del sistema
+    pasajeros_por_minuto = np.random.normal(loc=120, scale=45, size=n_muestras)
+    tiempo_espera_min = np.random.normal(loc=8, scale=3, size=n_muestras)
+    velocidad_promedio_kmh = np.random.normal(loc=22, scale=6, size=n_muestras)
+    
+    # Asegurar valores realistas dentro de límites operativos
+    pasajeros_por_minuto = np.clip(pasajeros_por_minuto, 10, 250)
+    tiempo_espera_min = np.clip(tiempo_espera_min, 1, 20)
+    velocidad_promedio_kmh = np.clip(velocidad_promedio_kmh, 8, 40)
+    
+    df = pd.DataFrame({
+        'pasajeros_por_minuto': pasajeros_por_minuto,
+        'tiempo_espera_min': tiempo_espera_min,
+        'velocidad_promedio_kmh': velocidad_promedio_kmh
+    })
+    
+    df.to_csv('transmilenio_clustering_dataset.csv', index=False)
+    print("✓ Dataset 'transmilenio_clustering_dataset.csv' generado exitosamente con 500 muestras.\n")
+    return df
+
+# ==========================================================
+# 2. PREPROCESAMIENTO Y MODELO K-MEANS (Cap. 16 Palma Méndez)
+# ==========================================================
+def ejecutar_clustering_no_supervisado():
+    df = generar_dataset_no_supervisado()
+    
+    # Estandarización de variables (Escalamiento de características Z-Score)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df)
+    
+    # ------------------------------------------------------
+    # A. MÉTODO DEL CODO (ELBOW METHOD) PARA ELEGIR K
+    # ------------------------------------------------------
+    inercias = []
+    k_rangos = range(1, 8)
+    for k in k_rangos:
+        kmeans_test = KMeans(n_clusters=k, random_state=42, n_init=10)
+        kmeans_test.fit(X_scaled)
+        inercias.append(kmeans_test.inertia_)
+        
+    plt.figure(figsize=(7, 4))
+    plt.plot(k_rangos, inercias, 'bo-', linewidth=2, markersize=8)
+    plt.title('Método del Codo para Selección de K Óptimo', fontsize=12, fontweight='bold')
+    plt.xlabel('Número de Clusters (K)')
+    plt.ylabel('Inercia (Suma de errores al cuadrado)')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig('metodo_codo.png', dpi=300)
+    print("✓ Gráfica 'metodo_codo.png' guardada.")
+    plt.show()
+
+    # ------------------------------------------------------
+    # B. ENTRENAMIENTO DE K-MEANS CON K=3
+    # ------------------------------------------------------
+    k_optimo = 3
+    modelo_kmeans = KMeans(n_clusters=k_optimo, random_state=42, n_init=10)
+    df['Cluster'] = modelo_kmeans.fit_predict(X_scaled)
+    
+    score_silueta = silhouette_score(X_scaled, df['Cluster'])
+    
+    print("=" * 60)
+    print(" RESULTADOS DEL MODELO NO SUPERVISADO (K-MEANS)")
+    print("=" * 60)
+    print(f"Número de Agrupamientos (K): {k_optimo}")
+    print(f"Coeficiente de Silueta (Silhouette Score): {score_silueta:.3f}\n")
+    
+    print("Centroides de los Clusters (Promedios por Grupo):")
+    resumen_clusters = df.groupby('Cluster').mean()
+    print(resumen_clusters)
+    print("\n" + "=" * 60)
