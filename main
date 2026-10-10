@@ -110,5 +110,7 @@ def ejecutar_clustering_no_supervisado():
     plt.savefig('clusters_transmilenio.png', dpi=300)
     print("✓ Gráfica 'clusters_transmilenio.png' guardada.")
     plt.show()
+if __name__ == "__main__":
+    ejecutar_clustering_no_supervisado()
 
 
