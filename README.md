@@ -1,0 +1,2 @@
+Para llevar a cabo el análisis mediante aprendizaje no supervisado, el script en Python incorpora la función automatizada encargada de generar y estructurar el archivo de datos denominado transmilenio_clustering_dataset.csv. Este archivo contiene 500 muestras continúas diseñadas mediante distribuciones estadísticas para simular con alto realismo las condiciones de tráfico y operación del sistema de transporte masivo TransMilenio.
+El archivo fuente se encuentra disponible, alojado y listo para su validación en la raíz del repositorio oficial del proyecto en Git/GitHub.
